@@ -1,0 +1,27 @@
+{
+  "name": "news-scrape",
+  "version": "1.0.0",
+  "description": "week 18 assignment",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cecolby11/news-scrape.git"
+  },
+  "author": "casey colby",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/cecolby11/news-scrape/issues"
+  },
+  "homepage": "https://github.com/cecolby11/news-scrape#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cheerio": "^1.0.0-rc.1",
+    "express": "^4.15.3",
+    "express-handlebars": "^3.0.0",
+    "mongoose": "^4.10.4",
+    "request": "^2.81.0"
+  }
+}
