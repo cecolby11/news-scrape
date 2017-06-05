@@ -5,6 +5,7 @@
 var express = require('express');
 var bodyParser = require('body-parser');
 var exphbs = require('express-handlebars');
+var methodOverride = require('method-override');
 // database
 var mongoose = require('mongoose');
 // scraping
@@ -35,9 +36,14 @@ app.use(bodyParser.urlencoded({
 // Make public a static dir
 app.use(express.static("public"));
 
+// handlebars config
+app.engine("handlebars", exphbs({ defaultLayout: "main" }));
+app.set("view engine", "handlebars");
+
+app.use(methodOverride("_method"));
 
 // config db with mongoose
-mongoose.connect("mongodb://localhost/week18day3mongoose");
+mongoose.connect("mongodb://localhost/news-scrape");
 var db = mongoose.connection;
 // log mongoose errors
 db.on("error", function(error) {
@@ -52,17 +58,53 @@ db.once("open", function() {
 // ROUTES
 // =======
 
+// GET: when user visits site, should scrape again
 app.get('/', function(req, res) {
+  res.redirect('/');
+});
+
+// GET: scrape articles and redirect to articles page for display 
+app.get('/scrape', function(req, res) {
+   // 1. scrape news website 
+  // a. grab html body with request
+  request('http://www.techcrunch.com', function(error, response, html) {
+    // b. load into cheerio 
+    var $ = cheerio.load(html);
+    // c. grab the articles 
+    $('#river1 .river-block .block-content').each(function(i, element) {
+      // empty result object
+      var result = {};
+      // add the headline and link of each article as properties of result 
+      var info = $(this).children('h2');
+      var a = info.children('a');
+      var link = a.attr('href');
+      result.headline = info.text();
+      result.link = link;
+
+      // create new Article
+      var newArticle = new Article(result);
+
+      // 2. TODO: check for duplicates
+      
+      // 3. save to db
+      newArticle.save(function(err, doc) {
+        if(err) {
+          console.log(error);
+        } else {
+          console.log('article saved to db');
+        }
+      });
+    });
+  });
   res.redirect('/articles');
 });
 
-// GET : 
-// 1. scrape news website 
-// 2. check for duplicates
-// 3. save non-duplicates to db
-// 4. display news content from db 
+// GET : view all scraped articles from db
 app.get('/articles', function(req, res) {
-  res.send('view all articles!');
+  // 1. get all articles from db and sort by date 
+  
+  // 2. display news content from db 
+  res.render('articles');
 });
 
 // GET : view a single article by id and all of its associated comments
