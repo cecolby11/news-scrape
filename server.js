@@ -158,3 +158,7 @@ app.listen(8080, function() {
 // TODO: adding and deleting comments
 // TODO: view comments in article hbs
 // TODO cheerio check for duplicates in db before saving 
+// TODO: hosting 
+// other ideas: sharing on social media? pull in more article details, etc. 
+// // function documentation
+// page of author's comments? make author collections 
