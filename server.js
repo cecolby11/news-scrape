@@ -92,7 +92,7 @@ app.get('/scrape', function(req, res) {
         if(err) {
           console.log(error);
         } else {
-          console.log('article saved to db');
+          console.log('new article saved to db');
         }
       });
     });

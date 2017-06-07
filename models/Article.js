@@ -6,11 +6,13 @@ var Schema = mongoose.Schema;
 var ArticleSchema = new Schema({
   headline: {
     type: String,
-    required: true
+    required: true, 
+    unique: true // avoid adding duplicates
   },
   link: {
     type: String,
-    required: true
+    required: true, 
+    unique: true // avoid adding duplicates
   },
   // comments is an array that stores objectIds linked to comments (comment contents get populated in server.js routes using mongoose populate)
   comments: [{
