@@ -60,10 +60,11 @@ db.once("open", function() {
 
 // GET: when user visits site, should scrape again
 app.get('/', function(req, res) {
-  res.redirect('/');
+  res.redirect('/articles');
 });
 
 // GET: scrape articles and redirect to articles page for display 
+// TODO: put this in the same route as displaying the articles so it's hit every time user views page
 app.get('/scrape', function(req, res) {
    // 1. scrape news website 
   // a. grab html body with request
@@ -102,14 +103,25 @@ app.get('/scrape', function(req, res) {
 // GET : view all scraped articles from db
 app.get('/articles', function(req, res) {
   // 1. get all articles from db and sort by date 
-  
-  // 2. display news content from db 
-  res.render('articles');
+  Article.find({}, function(error, doc) {
+    if(error) {
+      console.log(error);
+    } else {
+      res.render('articles', {articles: doc});
+    }
+  });
 });
 
 // GET : view a single article by id and all of its associated comments
 app.get('/articles/:id', function(req, res) {
-  res.send('view article by id: ' + req.params.id)
+  var articleId = req.params.id
+  Article.findOne({'_id': articleId}).populate('comments').exec(function(error, doc) {
+    if(error) {
+      console.log(error);
+    } else {
+      res.render('article',doc);
+    }
+  });
 });
 
 // POST : add new comment to a particular article 
@@ -126,5 +138,5 @@ app.delete('/articles/comment/:id', function(req, res) {
 
 // Listen on port 8080
 app.listen(8080, function() {
-  console.log("App running on port 3000!");
+  console.log("App running on port!");
 });

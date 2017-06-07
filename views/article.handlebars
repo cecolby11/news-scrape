@@ -1,17 +1,15 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <h2>View All Articles</h2>
+      <h3>{{headline}}</h3>
+      <a target="_blank" href={{link}}>View on TechCrunch</a>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
+      <h4>Comments</h4>
       <ul>
-        {{#each articles}}
-        <li>
-          <a target="_blank" href={{link}}>{{headline}}</a>
-        </li>
-        {{/each}}
+        <li>No comments yet.</li>
       </ul>
     </div>
   </div>
