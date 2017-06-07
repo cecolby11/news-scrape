@@ -10,6 +10,10 @@ var CommentSchema = new Schema({
   }, 
   body: {
     type: String
+  }, 
+  datetime: {
+    type: Date,
+    default: Date.now
   }
 });
 

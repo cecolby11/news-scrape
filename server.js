@@ -126,7 +126,20 @@ app.get('/articles/:id', function(req, res) {
 
 // POST : add new comment to a particular article 
 app.post('/articles/:id/comment', function(req, res) {
-  // TODO
+  var newComment = new Comment(req.body);
+  newComment.save(function(error, doc) {
+    if(error) {
+      console.log(error);
+    } else {
+      Article.findOneAndUpdate({'_id': req.params.id}, {$push: {'comments': doc._id}}, {new:true}, function(error, doc) {
+        if(error) {
+          console.log(error);
+        } else {
+          res.send(doc);
+        }
+      });
+    }
+  })
 });
 
 // DELETE : delete any comment (method override?)
@@ -140,3 +153,8 @@ app.delete('/articles/comment/:id', function(req, res) {
 app.listen(8080, function() {
   console.log("App running on port!");
 });
+
+// TODO: articles.hbs display link to view that article by id
+// TODO: adding and deleting comments
+// TODO: view comments in article hbs
+// TODO cheerio check for duplicates in db before saving 
