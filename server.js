@@ -166,16 +166,12 @@ app.delete('/articles/:articleId/comment/:commentId', function(req, res) {
   });
 });
 
-
-
 // Listen on port 8080
 app.listen(8080, function() {
   console.log("App running on port!");
 });
 
-// TODO: articles.hbs display link to view that article by id
-// TODO: adding and deleting comments
-// TODO: view comments in article hbs
+
 // TODO cheerio check for duplicates in db before saving 
 // TODO: hosting ****************
 // other ideas: sharing on social media? pull in more article details, etc. 
@@ -183,3 +179,4 @@ app.listen(8080, function() {
 // page of author's comments? make author collections 
 // TODO: validation (front end and database, e.g. length of author's name)
 // TODO: style.css
+// make comments window fixed height and scrollable, only display last X number of comments? 
