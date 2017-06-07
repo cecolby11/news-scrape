@@ -126,16 +126,18 @@ app.get('/articles/:id', function(req, res) {
 
 // POST : add new comment to a particular article 
 app.post('/articles/:id/comment', function(req, res) {
+  var articleId = req.params.id;
   var newComment = new Comment(req.body);
+
   newComment.save(function(error, doc) {
     if(error) {
       console.log(error);
     } else {
-      Article.findOneAndUpdate({'_id': req.params.id}, {$push: {'comments': doc._id}}, {new:true}, function(error, doc) {
+      Article.findOneAndUpdate({'_id': articleId}, {$push: {'comments': doc._id}}, {new:true}, function(error, doc) {
         if(error) {
           console.log(error);
         } else {
-          res.send(doc);
+          res.redirect('/articles/' + articleId);
         }
       });
     }
@@ -143,8 +145,25 @@ app.post('/articles/:id/comment', function(req, res) {
 });
 
 // DELETE : delete any comment (method override?)
-app.delete('/articles/comment/:id', function(req, res) {
-  // TODO
+app.delete('/articles/:articleId/comment/:commentId', function(req, res) {
+  var articleId = req.params.articleId;
+  var commentId = req.params.commentId;
+
+  // remove from comment array in Article
+  Article.findOneAndUpdate({'_id': articleId}, {$pull: {'comments': commentId}}, function(error, doc) {
+    if(error) {
+      console.log(error);
+    } else {
+      // remove from Comments collection
+      Comment.findByIdAndRemove(commentId, function(error, doc) {
+        if(error) {
+          console.log(error);
+        } else {
+          res.redirect('/articles/' + articleId);
+        }
+      });
+    }
+  });
 });
 
 
@@ -158,7 +177,9 @@ app.listen(8080, function() {
 // TODO: adding and deleting comments
 // TODO: view comments in article hbs
 // TODO cheerio check for duplicates in db before saving 
-// TODO: hosting 
+// TODO: hosting ****************
 // other ideas: sharing on social media? pull in more article details, etc. 
 // // function documentation
 // page of author's comments? make author collections 
+// TODO: validation (front end and database, e.g. length of author's name)
+// TODO: style.css
