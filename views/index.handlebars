@@ -1,0 +1,27 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-12">
+      {{#if newArticles}}
+        <h3>Freshly scraped content</h3>
+        <ul>
+          {{#each newArticles}}
+          {{!-- in case any articles on tech crunch were videos etc. and are missing the proper info! --}}
+          {{#if headline}}
+          <li>
+            <h4>{{headline}}</h4><a target="_blank" href={{link}}>View on TechCrunch</a>
+            <form method="POST" action="/articles">
+              <input type="hidden" name="headline" value={{headline}}>
+              <input type="hidden" name="link" value={{link}}>
+              <button type="submit">Save</button>
+            </form>
+          </li>
+          {{/if}} 
+          {{/each}}
+        </ul>
+      {{else}}
+        <p>No new articles</p>
+        <a href="/scrape" class="btn btn-default">Get Fresh Content</a>
+      {{/if}}
+    </div>
+  </div>
+</div>

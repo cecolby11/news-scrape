@@ -60,12 +60,14 @@ db.once("open", function() {
 
 // GET: when user visits site, should scrape again
 app.get('/', function(req, res) {
+  // res.render('index');
   res.redirect('/articles');
 });
 
-// GET: scrape articles and redirect to articles page for display 
-// TODO: put this in the same route as displaying the articles so it's hit every time user views page
+// GET: scrape articles and display in index hbs
 app.get('/scrape', function(req, res) {
+  // empty array for storing new articles before user saves them to db
+  // var newArticles = [];
    // 1. scrape news website 
   // a. grab html body with request
   request('http://www.techcrunch.com', function(error, response, html) {
@@ -81,26 +83,43 @@ app.get('/scrape', function(req, res) {
       var link = a.attr('href');
       result.headline = info.text();
       result.link = link;
-
-      // create new Article
+      // newArticles.push(result);
       var newArticle = new Article(result);
-
-      // 2. TODO: check for duplicates
-      
-      // 3. save to db
       newArticle.save(function(err, doc) {
         if(err) {
           console.log(error);
         } else {
           console.log('new article saved to db');
+          // res.redirect('index');
         }
       });
+
     });
+    // res.render('index', {newArticles: newArticles});
+    res.redirect('/articles');
   });
-  res.redirect('/articles');
 });
 
-// GET : view all scraped articles from db
+// POST: save new article to db from scraped 
+// app.post('/articles', function(req, res) {
+//   // 1. create new Article from req body 
+//   var newArticle = new Article({
+//     headline: req.body.headline,
+//     link: req.body.link
+//   });
+  
+//   // 2. save to db
+//   newArticle.save(function(err, doc) {
+//     if(err) {
+//       console.log(error);
+//     } else {
+//       console.log('new article saved to db');
+//       res.redirect('index')
+//     }
+//   });
+// });
+
+// GET : view all saved articles from db
 app.get('/articles', function(req, res) {
   // 1. get all articles from db and sort by date 
   Article.find({}, function(error, doc) {
@@ -144,7 +163,20 @@ app.post('/articles/:id/comment', function(req, res) {
   })
 });
 
-// DELETE : delete any comment (method override?)
+// DELETE: delete article by id 
+app.delete('/articles/:id', function(req, res) {
+  var articleId = req.params.id;
+
+  Article.findByIdAndRemove(articleId, function(error, doc) {
+    if(error) {
+      console.log(error);
+    } else {
+      res.redirect('/articles');
+    }
+  })
+})
+
+// DELETE : delete any comment from article by id
 app.delete('/articles/:articleId/comment/:commentId', function(req, res) {
   var articleId = req.params.articleId;
   var commentId = req.params.commentId;
@@ -172,7 +204,7 @@ app.listen(8080, function() {
 });
 
 
-// TODO cheerio check for duplicates in db before saving 
+// TODO cheerio check for duplicates in db before saving - did I do this right? 
 // TODO: hosting ****************
 // other ideas: sharing on social media? pull in more article details, etc. 
 // // function documentation

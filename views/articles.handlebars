@@ -1,18 +1,26 @@
 <div class="container">
   <div class="row">
     <div class="col-md-12">
-      <h2>View All Articles</h2>
+      <h2>View Saved Articles</h2>
     </div>
   </div>
   <div class="row">
     <div class="col-md-12">
+      {{#if articles}}
       <ul>
         {{#each articles}}
         <li>
           <h4>{{headline}}</h4><a href="/articles/{{_id}}">View Comments</a> | <a target="_blank" href={{link}}>View on TechCrunch</a>
+          <form method="POST" action="/articles/{{_id}}?_method=DELETE">
+            <button >Remove From Saved</button>
+          </form>
         </li>
         {{/each}}
       </ul>
+      {{else}}
+      <p>No saved articles</p>
+      <a href="/scrape" class="btn btn-default">Get Fresh Content</a>
+      {{/if}}
     </div>
   </div>
 </div>
