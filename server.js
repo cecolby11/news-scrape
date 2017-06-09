@@ -45,7 +45,8 @@ app.set("view engine", "handlebars");
 app.use(methodOverride("_method"));
 
 // config db with mongoose
-mongoose.connect("mongodb://localhost/news-scrape");
+// mongoose.connect("mongodb://localhost/news-scrape");
+mongoose.connect('mongodb://heroku_flk38q7r:pb9r1jvuup6n6flnk6i5jljdhi@ds163721.mlab.com:63721/heroku_flk38q7r');
 var db = mongoose.connection;
 // log mongoose errors
 db.on("error", function(error) {
