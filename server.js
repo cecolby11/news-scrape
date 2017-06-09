@@ -70,9 +70,9 @@ app.get('/scrape', function(req, res) {
     if(error) {
       console.log(error);
     } else {
-      console.log(doc);
+      //
     }
-  })
+  });
   // 1. scrape news website 
   // a. grab html body with request
   request('http://www.techcrunch.com', function(error, response, html) {
@@ -148,7 +148,7 @@ app.get('/articles/:id', function(req, res) {
 // PUT: update article from unsaved to saved
 app.put('/articles/:id', function(req, res) {
   var articleId = req.params.id;
-  console.log('ok');
+
   Article.findOneAndUpdate({'_id': articleId}, {'savedToDb': true}, function(error, doc) {
     if(error) {
       console.log(error);
@@ -221,5 +221,3 @@ app.listen(8080, function() {
 // TODO: hosting ****************
 // TODO: function documentation
 // TODO: validation (e.g. length of author's name)
-// TODO: style.css
-// TODO: make comments window only display last X number of comments? 

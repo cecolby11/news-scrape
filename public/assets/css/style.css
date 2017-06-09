@@ -4,6 +4,11 @@ body {
 h1, h2, h3, h4, h5 {
   font-weight: 300;
 }
+.title-a {
+  color: #5cb85c;
+  font-weight: 400;
+}
+
 .thumbnail {
   overflow: auto;
   padding: 10px;
