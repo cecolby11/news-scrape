@@ -60,14 +60,14 @@ db.once("open", function() {
 
 // GET: when user visits site, should scrape again
 app.get('/', function(req, res) {
-  // res.render('index');
-  res.redirect('/articles');
+  res.render('index');
+  // res.redirect('/articles');
 });
 
 // GET: scrape articles and display in index hbs
 app.get('/scrape', function(req, res) {
   // empty array for storing new articles before user saves them to db
-  // var newArticles = [];
+  var newArticles = [];
    // 1. scrape news website 
   // a. grab html body with request
   request('http://www.techcrunch.com', function(error, response, html) {
@@ -83,41 +83,50 @@ app.get('/scrape', function(req, res) {
       var link = a.attr('href');
       result.headline = info.text();
       result.link = link;
-      // newArticles.push(result);
-      var newArticle = new Article(result);
-      newArticle.save(function(err, doc) {
-        if(err) {
+      // check if already in database: 
+      Article.findOne({'headline': result.headline}, function(error, doc) {
+        if(error) {
           console.log(error);
+        } else if (doc) {
+          //if already saved in database, don't display as a possible article
         } else {
-          console.log('new article saved to db');
-          // res.redirect('index');
+          // if not in 
+          newArticles.push(result);
         }
       });
+      // var newArticle = new Article(result);
+      // newArticle.save(function(err, doc) {
+      //   if(err) {
+      //     console.log(error);
+      //   } else {
+      //     console.log('new article saved to db');
+      //     // res.redirect('index');
+      //   }
+      // });
 
     });
-    // res.render('index', {newArticles: newArticles});
-    res.redirect('/articles');
+    res.render('index', {newArticles: newArticles});
+    // res.redirect('/articles');
   });
 });
 
 // POST: save new article to db from scraped 
-// app.post('/articles', function(req, res) {
-//   // 1. create new Article from req body 
-//   var newArticle = new Article({
-//     headline: req.body.headline,
-//     link: req.body.link
-//   });
+app.post('/articles', function(req, res) {
+  // 1. create new Article from req body 
+  var newArticle = new Article({
+    headline: req.body.headline,
+    link: req.body.link
+  });
   
-//   // 2. save to db
-//   newArticle.save(function(err, doc) {
-//     if(err) {
-//       console.log(error);
-//     } else {
-//       console.log('new article saved to db');
-//       res.redirect('index')
-//     }
-//   });
-// });
+  // 2. save to db
+  newArticle.save(function(err, doc) {
+    if(err) {
+      console.log(error);
+    } else {
+      console.log('new article saved to db');
+    }
+  });
+});
 
 // GET : view all saved articles from db
 app.get('/articles', function(req, res) {

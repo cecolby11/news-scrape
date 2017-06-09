@@ -10,7 +10,7 @@
           <li>
             <h4>{{headline}}</h4><a target="_blank" href={{link}}>View on TechCrunch</a>
             <form method="POST" action="/articles">
-              <input type="hidden" name="headline" value={{headline}}>
+              <input type="hidden" name="headline" value="{{headline}}">
               <input type="hidden" name="link" value={{link}}>
               <button type="submit">Save</button>
             </form>
@@ -19,8 +19,7 @@
           {{/each}}
         </ul>
       {{else}}
-        <p>No new articles</p>
-        <a href="/scrape" class="btn btn-default">Get Fresh Content</a>
+        <p>Oh no! No new articles here.</p>
       {{/if}}
     </div>
   </div>
