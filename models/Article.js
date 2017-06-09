@@ -14,6 +14,10 @@ var ArticleSchema = new Schema({
     required: true, 
     unique: true // avoid adding duplicates
   },
+  savedToDb: {
+    type: Boolean,
+    default: false
+  },
   // comments is an array that stores objectIds linked to comments (comment contents get populated in server.js routes using mongoose populate)
   comments: [{
     type: Schema.Types.ObjectId,

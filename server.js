@@ -60,15 +60,20 @@ db.once("open", function() {
 
 // GET: when user visits site, should scrape again
 app.get('/', function(req, res) {
-  res.render('index');
-  // res.redirect('/articles');
+  res.redirect('/articles/newest');
 });
 
-// GET: scrape articles and display in index hbs
+// GET: scrape articles and redirect to route for displaying newest
 app.get('/scrape', function(req, res) {
-  // empty array for storing new articles before user saves them to db
-  var newArticles = [];
-   // 1. scrape news website 
+  // 0. remove any previous unsaved articles from the db 
+  Article.remove({'savedToDb':false}, function(error, doc) {
+    if(error) {
+      console.log(error);
+    } else {
+      console.log(doc);
+    }
+  })
+  // 1. scrape news website 
   // a. grab html body with request
   request('http://www.techcrunch.com', function(error, response, html) {
     // b. load into cheerio 
@@ -83,55 +88,38 @@ app.get('/scrape', function(req, res) {
       var link = a.attr('href');
       result.headline = info.text();
       result.link = link;
-      // check if already in database: 
-      Article.findOne({'headline': result.headline}, function(error, doc) {
-        if(error) {
+
+      // save to db (will have 'unsaved' status)
+      var newArticle = new Article(result);
+      newArticle.save(function(err, doc) {
+        if(err) {
           console.log(error);
-        } else if (doc) {
-          //if already saved in database, don't display as a possible article
         } else {
-          // if not in 
-          newArticles.push(result);
+          console.log('new article saved to db');
         }
       });
-      // var newArticle = new Article(result);
-      // newArticle.save(function(err, doc) {
-      //   if(err) {
-      //     console.log(error);
-      //   } else {
-      //     console.log('new article saved to db');
-      //     // res.redirect('index');
-      //   }
-      // });
 
     });
-    res.render('index', {newArticles: newArticles});
-    // res.redirect('/articles');
+    // display 'unsaved' articles
+    res.redirect('/articles/newest');
   });
 });
 
-// POST: save new article to db from scraped 
-app.post('/articles', function(req, res) {
-  // 1. create new Article from req body 
-  var newArticle = new Article({
-    headline: req.body.headline,
-    link: req.body.link
-  });
-  
-  // 2. save to db
-  newArticle.save(function(err, doc) {
-    if(err) {
+
+// GET : view all unsaved/new articles from db
+app.get('/articles/newest', function(req, res) {
+  Article.find({'savedToDb': false}, function(error, doc) {
+    if(error) {
       console.log(error);
     } else {
-      console.log('new article saved to db');
+      res.render('index', {newArticles: doc});
     }
   });
 });
 
 // GET : view all saved articles from db
-app.get('/articles', function(req, res) {
-  // 1. get all articles from db and sort by date 
-  Article.find({}, function(error, doc) {
+app.get('/articles', function(req, res) { 
+  Article.find({'savedToDb': true}, function(error, doc) {
     if(error) {
       console.log(error);
     } else {
@@ -148,6 +136,19 @@ app.get('/articles/:id', function(req, res) {
       console.log(error);
     } else {
       res.render('article',doc);
+    }
+  });
+});
+
+// PUT: update article from unsaved to saved
+app.put('/articles/:id', function(req, res) {
+  var articleId = req.params.id;
+  console.log('ok');
+  Article.findOneAndUpdate({'_id': articleId}, {'savedToDb': true}, function(error, doc) {
+    if(error) {
+      console.log(error);
+    } else {
+      res.redirect('/articles/newest');
     }
   });
 });
@@ -212,12 +213,8 @@ app.listen(8080, function() {
   console.log("App running on port!");
 });
 
-
-// TODO cheerio check for duplicates in db before saving - did I do this right? 
 // TODO: hosting ****************
-// other ideas: sharing on social media? pull in more article details, etc. 
-// // function documentation
-// page of author's comments? make author collections 
-// TODO: validation (front end and database, e.g. length of author's name)
+// TODO: function documentation
+// TODO: validation (e.g. length of author's name)
 // TODO: style.css
-// make comments window fixed height and scrollable, only display last X number of comments? 
+// TODO: make comments window only display last X number of comments? 
