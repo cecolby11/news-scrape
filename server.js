@@ -221,6 +221,3 @@ var port = (process.env.PORT || 5000);
 app.listen(port, function() {
   console.log("App running on port!");
 });
-
-// TODO: hosting ****************
-// TODO: function documentation
