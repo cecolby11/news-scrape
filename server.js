@@ -86,8 +86,13 @@ app.get('/scrape', function(req, res) {
       var info = $(this).children('h2');
       var a = info.children('a');
       var link = a.attr('href');
+      var datetime = info.siblings('.byline').children('time').attr('datetime');
+      var author = info.siblings('.byline').children('a').text();
+
       result.headline = info.text();
       result.link = link;
+      result.author = author;
+      result.datetime = datetime;
 
       // save to db (will have 'unsaved' status)
       var newArticle = new Article(result);

@@ -14,6 +14,12 @@ var ArticleSchema = new Schema({
     required: true, 
     unique: true // avoid adding duplicates
   },
+  author: {
+    type: String
+  },
+  datetime: {
+    type: Date
+  },
   savedToDb: {
     type: Boolean,
     default: false
