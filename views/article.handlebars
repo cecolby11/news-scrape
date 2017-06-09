@@ -36,8 +36,8 @@
       <h3>Add Comment</h3>
       <form method="POST" action="/articles/{{_id}}/comment">
         <div class="form-group">
-          <label for="author">Author</label>
-          <input id="author" type="text" name="author"class="form-control" required>
+          <label for="author">Author Name</label>
+          <input id="author" type="text" name="author"class="form-control" pattern=".{0,20}" title="20 or less characters">
         </div>
         <div class="form-group">
           <label for="comment-body">Comment</label>
@@ -51,3 +51,4 @@
   </div>
 
 </div>
+

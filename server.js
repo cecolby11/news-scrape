@@ -222,4 +222,3 @@ app.listen(8080, function() {
 
 // TODO: hosting ****************
 // TODO: function documentation
-// TODO: validation (e.g. length of author's name)
