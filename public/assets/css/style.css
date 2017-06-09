@@ -8,6 +8,11 @@ h1, h2, h3, h4, h5 {
   color: #5cb85c;
   font-weight: 400;
 }
+.navbar li a {
+  color: #5bc0de !important;
+  font-weight: 400;
+  font-size: 18px;
+}
 
 .thumbnail {
   overflow: auto;
@@ -23,7 +28,7 @@ h1, h2, h3, h4, h5 {
 }
 .datetime {
   color: #337ab7;
-  font-size: 14px;
+  font-size: 12px;
   font-weight: 400;
 }
 .comment-box {

@@ -14,6 +14,8 @@ var cheerio = require('cheerio');
 // models
 var Article = require('./models/Article.js');
 var Comment = require('./models/Comment.js');
+// moment 
+var moment = require('moment');
 
 // ============
 // SERVER SETUP
@@ -92,7 +94,7 @@ app.get('/scrape', function(req, res) {
       result.headline = info.text();
       result.link = link;
       result.author = author;
-      result.datetime = datetime;
+      result.datetime = moment(datetime).format('MMMM Do YYYY, h:mm a'); 
 
       // save to db (will have 'unsaved' status)
       var newArticle = new Article(result);

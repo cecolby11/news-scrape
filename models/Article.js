@@ -18,7 +18,7 @@ var ArticleSchema = new Schema({
     type: String
   },
   datetime: {
-    type: Date
+    type: String // string formatted with moment before saving
   },
   savedToDb: {
     type: Boolean,
